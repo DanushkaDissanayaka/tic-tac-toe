@@ -6,6 +6,9 @@ video_width = 640
 video_hight = 480
 #defiene size of a squre and number of sqres per row and column shuld be 3 for our game
 
+#define symboles for players
+human_symbol = 'O'
+ai_symbol = 'X'
 
 # calculate grid points
 def gridpoint(video_w,video_h,size_of_squre,no_of_squre):
@@ -35,12 +38,12 @@ def check_position(x,y,r,gridpoints,marklist):
     min_point_y = y-r
     for i in range (len(gridpoints)):
         #we dont need to check if the position is alredy fill
-        if ((marklist[i] == 'H') or (marklist[i] == 'A')):
+        if ((marklist[i] == human_symbol) or (marklist[i] == ai_symbol)):
             continue
         #check if the position is not fill
         point = gridpoints[i]
         if((point[0][0] < min_point_x) and (point[1][0] > max_point_x) and (point[0][1] < min_point_y ) and (point[1][1] > max_point_y)):
-            print(i+1)
+            # print(i+1)
             return i
         # i += 1
         # else:
@@ -57,8 +60,37 @@ videoCapture = cv2.VideoCapture(0)
 videoCapture.set(3,video_width)
 videoCapture.set(4,video_hight)
 
+def check_wining():
+     #wining possibilities
+    winCombos = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 4, 8],[2, 4, 6],[0, 3, 6],[1, 4, 7],[2, 5, 8]]
+    for i in range(len(winCombos)):
+      H_win = 0
+      AI_win = 0
+      for j in range (len(winCombos[i])):
+            if(marklist[winCombos[i][j]] == human_symbol):
+                H_win += 1
+            if(marklist[winCombos[i][j]] == ai_symbol):
+                AI_win += 1
+            if(H_win == 3):
+                print("Human won the game")
+                return "Human won the game"
+            if(AI_win == 3):
+                print("AI won the game")
+                return "AI won the game"
+    return 'N'
+
+def showresult(result):
+    while True:
+        ret, image = videoCapture.read()
+        # image=cv2.flip(image, +1)
+        cv2.putText(image,result,(10,(video_hight/2)), font, 1.5,(255,0,0),2)
+        cv2.imshow('Video',image)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
 while True:
     ret, image = videoCapture.read()
+    # image=cv2.flip(image, +1)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     gray = cv2.blur(gray,(5,5))
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1.4, 30)
@@ -72,20 +104,23 @@ while True:
             cv2.circle(image, (x, y), r, (0, 255, 0), 4)
             index = check_position(x,y,r,gridpoints,marklist)
             # print(x,y)
-            #if the position available then mark it as filled
+            #if the position available then mark it as filled with user symbole
             if(index != -1):
-                marklist[index] = 'H'
+                marklist[index] = human_symbol
     i=0
     # Add grid to image
     for point in gridpoints:
         # print (point[0][0])
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(image,str(marklist[i]),(point[0][0]+25,point[0][1]+25), font, 0.7,(255,255,255),2)
+        cv2.putText(image,str(marklist[i]),(point[0][0]+75,point[0][1]+75), font, 2,(0,255,0),2)
         cv2.rectangle(image,(point[0][0],point[0][1]),(point[1][0],point[1][1]),(0,0,255),2)
         i += 1
 
     cv2.imshow('Video',image)
-
+    win = check_wining()
+    if(win !='N'):
+        showresult(win)
+        break
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
     # print(marklist)
