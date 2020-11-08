@@ -13,7 +13,7 @@ def play_move(state, player, block_num):
     if state[int((block_num-1)/3)][(block_num-1)%3] is ' ':
         state[int((block_num-1)/3)][(block_num-1)%3] = player
     else:
-        block_num = int(input("Block is not empty, ya blockhead! Choose again: "))
+        block_num = int(input("Block is not empty, Choose again: "))
         play_move(state, player, block_num)
     
 def copy_game_state(state):

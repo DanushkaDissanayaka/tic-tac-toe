@@ -8,6 +8,9 @@ game_state = [[' ',' ',' '],
               [' ',' ',' ']]
 players = ['X','O']
 
+#LOAD TRAINED STATE VALUES
+state_values_for_AI = np.loadtxt('trained_state_values_O.txt', dtype=np.float64)
+
 def play_move(state, player, block_num):
     if state[int((block_num-1)/3)][(block_num-1)%3] is ' ':
         state[int((block_num-1)/3)][(block_num-1)%3] = player
@@ -102,45 +105,3 @@ def getBestMove(state, player):
     best_move_idx = np.argmax(curr_state_values)
     best_move = moves[best_move_idx]
     return best_move
-
-#LOAD TRAINED STATE VALUES
-state_values_for_AI = np.loadtxt('trained_state_values_O.txt', dtype=np.float64)
-
-# PLaying
-# play_again = 'Y'
-# while play_again == 'Y' or play_again == 'y':
-#     game_state = [[' ',' ',' '],
-#               [' ',' ',' '],
-#               [' ',' ',' ']]
-#     current_state = "Not Done"
-#     print("\nNew Game!")
-#     print_board(game_state)
-#     player_choice = input("Choose which player goes first - X (You - the petty human) or O(The mighty AI): ")
-#     winner = None
-    
-#     if player_choice == 'X' or player_choice == 'x':
-#         current_player_idx = 0
-#     else:
-#         current_player_idx = 1
-        
-#     while current_state == "Not Done":
-#         if current_player_idx == 0: # Human's turn
-#             block_choice = int(input("Oye Human, your turn! Choose where to place (1 to 9): "))
-#             play_move(game_state ,players[current_player_idx], block_choice)
-#         else:   # AI's turn
-#             block_choice = getBestMove(game_state, players[current_player_idx])
-#             play_move(game_state ,players[current_player_idx], block_choice)
-#             print("AI plays move: " + str(block_choice))
-#         print_board(game_state)
-#         winner, current_state = check_current_state(game_state)
-#         if winner is not None:
-#             print(str(winner) + " won!")
-#         else:
-#             current_player_idx = (current_player_idx + 1)%2
-        
-#         if current_state is "Draw":
-#             print("Draw!")
-            
-#     play_again = input('Wanna try again BIYTACH?(Y/N) : ')
-#     if play_again == 'N':
-#         print('Suit yourself bitch!')

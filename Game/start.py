@@ -15,7 +15,7 @@ gridpoints = grid.gridpoint(video_width,video_hight,130,3)
 
 current_state = "Not Done"
 winner = None
-current_player_idx = 1
+current_player_idx = 1 # First ai will play
 
 while True:
     ret,image = videoCapture.read()
